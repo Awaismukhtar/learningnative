@@ -6,10 +6,11 @@ import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import SocialSignInButtons from '../components/SocialSignInButtons';
 
+const email_regex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const SignUpScreen = () => {
   const navigation = useNavigation();
-  const { control, handleSubmit } = useForm();
-
+  const { control, handleSubmit, watch } = useForm();
+  const pwd = watch('password');
   const handleTerms = () => {
     console.warn('Login');
   };
@@ -41,7 +42,10 @@ const SignUpScreen = () => {
           name="email"
           placeholder="Email"
           control={control}
-          rules={{ required: 'Email is required' }}
+          rules={{
+            required: 'Email is required',
+            pattern: { value: email_regex, message: ' Email is invalid' },
+          }}
         />
         <CustomInput
           name="password"
@@ -54,7 +58,10 @@ const SignUpScreen = () => {
           name="confirmpassword"
           placeholder="Confirm Password"
           control={control}
-          rules={{ required: 'Confirm Password is required' }}
+          rules={{
+            required: 'Confirm Password is required',
+            validate: value => value === pwd || 'Password do not match',
+          }}
           secureTextEntry
         />
         <CustomButton onPress={handleSubmit(handleSignUp)} text="Register" />
